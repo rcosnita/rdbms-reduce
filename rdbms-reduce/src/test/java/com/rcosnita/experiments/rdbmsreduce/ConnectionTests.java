@@ -22,11 +22,11 @@ public class ConnectionTests {
 	 */
 	@Test
 	public void testJPAConnection() {
-		EntityManager em = JPABuilder.getEntityManager("store1-jpa");
+		EntityManager em = JPABuilder.getEntityManager(JPABuilder.STORE);
 		
 		em.close();
 		
-		em = JPABuilder.getEntityManager("provisioning-jpa");
+		em = JPABuilder.getEntityManager(JPABuilder.PROVISIONING);
 		
 		em.close();
 	}

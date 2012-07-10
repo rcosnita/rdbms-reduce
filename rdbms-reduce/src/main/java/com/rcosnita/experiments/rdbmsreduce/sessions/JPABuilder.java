@@ -19,6 +19,9 @@ public class JPABuilder {
 	private static final Map<String, EntityManagerFactory> managers = 
 			new HashMap<String, EntityManagerFactory>();
 	
+	public static final String PROVISIONING = "provisioning-jpa";
+	public static final String STORE = "store1-jpa";
+	
 	/**
 	 * Method used to obtain an entity manager instance for a given persistence unit.
 	 *  

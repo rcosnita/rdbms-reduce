@@ -54,4 +54,12 @@ public class ProvisioningItem implements Serializable {
 	public void setProvId(Integer provId) {
 		this.provId = provId;
 	}
+
+	public Integer getProvType() {
+		return provType;
+	}
+
+	public void setProvType(Integer provType) {
+		this.provType = provType;
+	}
 }
