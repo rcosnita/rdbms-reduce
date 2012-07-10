@@ -5,21 +5,27 @@
              xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_1_0.xsd"
              version="1.0">
 
-    <persistence-unit name="hibernate-search-example">
+    <persistence-unit name="provisioning-database">
         <properties>
-
-            <property name="hibernate.dialect" value="org.hibernate.dialect.HSQLDialect"/>
+            <property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect"/>
             <property name="hibernate.connection.driver_class" value="org.hsqldb.jdbcDriver"/>
-            <property name="hibernate.connection.username" value="sa"/>
-            <property name="hibernate.connection.password" value=""/>
-            <property name="hibernate.connection.url" value="jdbc:hsqldb:."/>
+            <property name="hibernate.connection.username" value="provisioning"/>
+            <property name="hibernate.connection.password" value="12345"/>
+            <property name="hibernate.connection.url" value="jdbc:mysql://localhost:3306/provisioning"/>
 
-            <property name="hibernate.hbm2ddl.auto" value="create-drop"/>
-
-            <property name="hibernate.search.default.indexBase" value="target"/>
-
-            <!-- optional -->
-            <property name="hibernate.search.default.directory_provider" value="filesystem"/>
+            <property name="hibernate.hbm2ddl.auto" value="validate" />
         </properties>
     </persistence-unit>
+    
+    <persistence-unit name="store1-database">
+        <properties>
+            <property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect"/>
+            <property name="hibernate.connection.driver_class" value="org.hsqldb.jdbcDriver"/>
+            <property name="hibernate.connection.username" value="provisioning"/>
+            <property name="hibernate.connection.password" value="12345"/>
+            <property name="hibernate.connection.url" value="jdbc:mysql://localhost:3306/store1_products"/>
+
+            <property name="hibernate.hbm2ddl.auto" value="validate" />
+        </properties>
+    </persistence-unit>    
 </persistence>
