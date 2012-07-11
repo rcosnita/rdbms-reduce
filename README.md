@@ -12,4 +12,11 @@ To setup the test environment you must do the following:
 ## Large volume of data
 
 You must run CreateLargeVolumeData program from com.rcosnita.experiments.rdbmsreduce package. This will create 
-a large amount of data in both provisioning items and domains tables.
+a large amount of data in both provisioning items and domains tables. After the application execution you will
+have approx. 400.000 provisioning items and 400.000 domains in your database.
+
+
+## Use cases of this distributed approach
+### Test 1 - Retrieve the top 10 domains in alphabetical order
+
+I assume I have an application that needs to retrieve the first 10 domains belonging to a specified customer.

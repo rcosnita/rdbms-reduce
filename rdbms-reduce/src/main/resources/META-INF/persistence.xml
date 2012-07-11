@@ -6,7 +6,9 @@
              version="1.0">
 
     <persistence-unit name="provisioning-jpa">
-        <class>com.rcosnita.experiments.rdbmsreduce.entities.ProvisioningItem</class>        
+        <class>com.rcosnita.experiments.rdbmsreduce.entities.ProvisioningItem</class>
+        <exclude-unlisted-classes />
+                
         <properties>
             <property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect"/>
             <property name="hibernate.connection.driver_class" value=" com.mysql.jdbc.Driver"/>
@@ -19,6 +21,9 @@
     </persistence-unit>
     
     <persistence-unit name="store1-jpa">
+        <class>com.rcosnita.experiments.rdbmsreduce.entities.Domain</class>
+        <exclude-unlisted-classes />
+        
         <properties>
             <property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect"/>
             <property name="hibernate.connection.driver_class" value=" com.mysql.jdbc.Driver"/>
