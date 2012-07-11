@@ -6,6 +6,7 @@
              version="1.0">
 
     <persistence-unit name="provisioning-jpa">
+        <class>com.rcosnita.experiments.rdbmsreduce.entities.ProvisioningItem</class>        
         <properties>
             <property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect"/>
             <property name="hibernate.connection.driver_class" value=" com.mysql.jdbc.Driver"/>

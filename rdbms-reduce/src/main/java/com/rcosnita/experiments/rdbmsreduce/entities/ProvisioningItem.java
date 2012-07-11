@@ -3,6 +3,7 @@ package com.rcosnita.experiments.rdbmsreduce.entities;
 import java.io.Serializable;
 
 import javax.persistence.Column;
+import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -15,6 +16,7 @@ import javax.persistence.Table;
  * @since 10.07.2012
  */
 
+@Entity
 @Table(name="items")
 public class ProvisioningItem implements Serializable {
 	@Id
