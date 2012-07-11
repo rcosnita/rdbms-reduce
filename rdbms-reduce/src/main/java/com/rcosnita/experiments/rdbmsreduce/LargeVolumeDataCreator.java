@@ -80,8 +80,6 @@ public class LargeVolumeDataCreator {
 		}
 	}
 	
-	private void
-	
 	public static void main(String[] args) {
 		LargeVolumeDataCreator generator = new LargeVolumeDataCreator();
 		
