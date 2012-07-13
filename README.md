@@ -17,6 +17,7 @@ have approx. 400.000 provisioning items and 400.000 domains in your database.
 
 
 ## Use cases of this distributed approach
-### Test 1 - Retrieve the top 10 domains in alphabetical order
+### Test 1 - Retrieve the top n domains in alphabetical order
 
-I assume I have an application that needs to retrieve the first 10 domains belonging to a specified customer.
+I assume I have an application that needs to retrieve the first n domains belonging to a specified customer. You can easy see this
+use case by running: java -cp rdbms-reduce.jar com.rcosnita.experiments.rdbmsreduce.examples.TopDomains <account_id> <number_of_domains>

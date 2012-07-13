@@ -90,8 +90,12 @@ public class TopDomains {
 	}
 	
 	public static void main(String[] args) {
-		int accountId = 100;
-		int maxDomains = 10;
+		if(args.length != 2) {
+			throw new RuntimeException("Invalid usage... Ex: java com.rcosnita.experiments.rdbmsreduce.examples.TopDomains <account_id> <number_of_domains>");
+		}
+		
+		int accountId = Integer.parseInt(args[0]);
+		int maxDomains = Integer.parseInt(args[1]);
 		
 		long startTime = Calendar.getInstance().getTimeInMillis();
 		
@@ -99,7 +103,7 @@ public class TopDomains {
 		
 		String sql = "SELECT * FROM domains WHERE prov_id IN (%(prov_ids)) ORDER BY name ASC";
 		
-		Reductor reductor = new Reductor(1, SupportedEngines.MySQL);
+		Reductor reductor = new Reductor(14, SupportedEngines.MySQL);
 		
 		TopDomains topDomains = new TopDomains(reductor, sql, maxDomains, provIds);
 		List<Map<String, Object>> domains = topDomains.getTopDomains();
