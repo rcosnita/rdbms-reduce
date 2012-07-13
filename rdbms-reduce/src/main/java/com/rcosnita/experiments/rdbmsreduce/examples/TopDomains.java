@@ -103,7 +103,7 @@ public class TopDomains {
 		List<Map<String, Object>> domains = topDomains.getTopDomains();
 		long endTime2 = Calendar.getInstance().getTimeInMillis();
 		
-		logger.info(String.format("Get top domains operation took %s milliseconds.", (endTime2 - startTime2)));		
+		logger.info(String.format("Get top domains operation took %s milliseconds.", (endTime2 - startTime2)));
 		
 		long endTime = Calendar.getInstance().getTimeInMillis();
 		
