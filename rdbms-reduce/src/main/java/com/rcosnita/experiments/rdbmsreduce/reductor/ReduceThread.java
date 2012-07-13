@@ -79,7 +79,7 @@ public class ReduceThread implements Callable<List<Map<String, Object>>> {
 		String[] colNames = new String[resMeta.getColumnCount()];
 		
 		for(int i = 1; i <= resMeta.getColumnCount(); i++) {
-			colNames[i] = resMeta.getColumnName(i);
+			colNames[i - 1] = resMeta.getColumnName(i);
 		}
 		
 		return colNames;

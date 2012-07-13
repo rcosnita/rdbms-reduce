@@ -62,7 +62,7 @@ public class TopDomains {
 		final List<Map<String, Object>> results = new ArrayList<Map<String,Object>>();
 		
 		try {
-			em = JPABuilder.getEntityManager(JPABuilder.PROVISIONING);
+			em = JPABuilder.getEntityManager(JPABuilder.STORE);
 			
 			Session session = em.unwrap(Session.class);
 			

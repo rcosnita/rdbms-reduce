@@ -58,7 +58,7 @@ public class Reductor {
 			buffer.append(delimitator);
 		}
 		
-		return buffer.substring(0, buffer.length()).toString();
+		return buffer.substring(0, buffer.length() - 1).toString();
 	}
 	
 	/**
@@ -174,7 +174,7 @@ public class Reductor {
 			int startIndex = i * inclauseLength; 
 			int endIndex = startIndex + inclauseLength;
 			
-			List<Integer> idsSlice = ids.subList(startIndex, endIndex);
+			List<Integer> idsSlice = ids.subList(startIndex, Math.min(endIndex, ids.size()));
 			String idsStr = joinStrings(idsSlice, ",");
 			
 			Map<String, Object> reduceValues = new HashMap<String, Object>();
