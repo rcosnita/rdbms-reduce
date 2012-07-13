@@ -40,18 +40,7 @@ public class TopDomains {
 		this.topDomains = topDomains;
 		this.provIds = provIds;
 	}
-	
-	/**
-	 * Method used to display the top domains.
-	 * 
-	 * @param results
-	 */
-	public void displayTopDomains(List<Map<String, Object>> results) {
-		for(Map<String, Object> domain : results) {
-			logger.info(String.format("Domain ----> %s", domain.get("name")));
-		}
-	}
-	
+		
 	/**
 	 * Method used to obtain the top domains based on the current object attributes.
 	 * 
@@ -103,16 +92,21 @@ public class TopDomains {
 		
 		String sql = "SELECT * FROM domains WHERE prov_id IN (%(prov_ids)) ORDER BY name ASC";
 		
-		Reductor reductor = new Reductor(14, SupportedEngines.MySQL);
+		Reductor reductor = new Reductor(1, SupportedEngines.MySQL);
 		
 		TopDomains topDomains = new TopDomains(reductor, sql, maxDomains, provIds);
+		
+		long startTime2 = Calendar.getInstance().getTimeInMillis(); 
 		List<Map<String, Object>> domains = topDomains.getTopDomains();
+		long endTime2 = Calendar.getInstance().getTimeInMillis();
+		
+		logger.info(String.format("Get top domains operation took %s milliseconds.", (endTime2 - startTime2)));		
 		
 		long endTime = Calendar.getInstance().getTimeInMillis();
 		
 		logger.info(String.format("Top domains use case took %s milliseconds.", (endTime - startTime)));
 		
-		topDomains.displayTopDomains(domains);
+		//DomainsUtils.displayDomains(domains);
 		
 		System.exit(0);
 	}

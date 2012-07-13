@@ -21,3 +21,9 @@ have approx. 400.000 provisioning items and 400.000 domains in your database.
 
 I assume I have an application that needs to retrieve the first n domains belonging to a specified customer. You can easy see this
 use case by running: java -cp rdbms-reduce.jar com.rcosnita.experiments.rdbmsreduce.examples.TopDomains <account_id> <number_of_domains>
+
+### Test 2 - Retrieve the top n domains matching a given filter
+
+I assume I have an application that needs to retrieve the first n domains belonging to a specified customer and belonging to 
+co.uk tld. You can easy see this use case running by accessing: 
+java -cp rdbms-reduce.jar com.rcosnita.experiments.rdbmsreduce.examples.TopDomainsWithFiltering <account_id> <number_of_domains> <tld_pattern>

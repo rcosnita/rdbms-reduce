@@ -65,7 +65,7 @@ public class JPABuilder {
 		
 		EntityManager em = JPABuilder.getEntityManager(JPABuilder.PROVISIONING);		
 		
-		long startDate = Calendar.getInstance().getTimeInMillis();
+		final long startDate = Calendar.getInstance().getTimeInMillis();
 		
 		final List<Integer> provIds = new ArrayList<Integer>();
 		
@@ -78,6 +78,10 @@ public class JPABuilder {
 				stmt.setInt(1, accountId);
 				
 				ResultSet res = stmt.executeQuery();
+				
+				long endDate = Calendar.getInstance().getTimeInMillis();
+				
+				logger.info(String.format("Query of provids execution took %s milliseconds.", (endDate - startDate)));
 				
 				while(res.next()) {
 					provIds.add(res.getInt("prov_id"));
