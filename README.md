@@ -7,7 +7,8 @@ This is a distributed reduce exercise for a scenario when resource ids are store
 To setup the test environment you must do the following:
 
 1. Create a user in your mysql server called provisioning.
-2. Execute the script sql/distributed_dbs.sql
+2. Execute the script sql/distributed_dbs.sql (if you want unindexed database).
+3. Execute the script sql/distributed_dbs_indexed.sql (if you want indexed database - closer to production environment).
 
 ## Large volume of data
 
