@@ -139,9 +139,7 @@ public class Reductor {
 			List<Map<String, Object>> rows = task.get();
 			sortSet(rows, orderBy, orderAsc);
 			
-			rows = rows.subList(0, topRecords);
-			
-			results.addAll(rows);
+			results = rows.subList(0, topRecords);
 		}
 		
 		long endDate = Calendar.getInstance().getTimeInMillis();
