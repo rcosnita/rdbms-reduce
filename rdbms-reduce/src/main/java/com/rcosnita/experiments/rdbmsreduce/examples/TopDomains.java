@@ -106,7 +106,7 @@ public class TopDomains {
 		
 		logger.info(String.format("Top domains use case took %s milliseconds.", (endTime - startTime)));
 		
-		//DomainsUtils.displayDomains(domains);
+		DomainsUtils.displayDomains(domains);
 		
 		System.exit(0);
 	}
