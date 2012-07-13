@@ -164,13 +164,19 @@ public class LargeVolumeDataCreator {
 	}
 	
 	public static void main(String[] args) {
+		if(args.length != 3) {
+			throw new RuntimeException("Invalid usage ... Command must be executed as follows: java com.rcosnita.experiments.rdbmsreduce.LargeVolumeDataCreator <max_provids> <max_accounts> <start_account>");
+		}
+		
 		LargeVolumeDataCreator generator = new LargeVolumeDataCreator();
 		
-		int maxProvIds = 400000;
+		int maxProvIds = Integer.parseInt(args[0]);
+		int maxAccounts = Integer.parseInt(args[1]);
+		int startAccount = Integer.parseInt(args[2]);
 		
 		List<Integer> accountIds = new ArrayList<Integer>();
 		
-		for(int i = 100; i < 130; i++) {
+		for(int i = startAccount; i < startAccount + maxAccounts; i++) {
 			accountIds.add(i);
 		}
 		

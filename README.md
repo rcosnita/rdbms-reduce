@@ -11,9 +11,11 @@ To setup the test environment you must do the following:
 
 ## Large volume of data
 
-You must run CreateLargeVolumeData program from com.rcosnita.experiments.rdbmsreduce package. This will create 
-a large amount of data in both provisioning items and domains tables. After the application execution you will
-have approx. 400.000 provisioning items and 400.000 domains in your database.
+You must run CreateLargeVolumeData program from com.rcosnita.experiments.rdbmsreduce package.
+
+Example: java -cp rdbms-reduce.jar com.rcosnita.experiments.rdbmsreduce.LargeVolumeDataCreator 1000000 40 100
+
+This will generate 1000000 provisioning items evenly distributed among 40 consecutive accounts, first account being 100.
 
 
 ## Use cases of this distributed approach
