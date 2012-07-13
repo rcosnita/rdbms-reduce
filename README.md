@@ -29,3 +29,5 @@ use case by running: java -cp rdbms-reduce.jar com.rcosnita.experiments.rdbmsred
 I assume I have an application that needs to retrieve the first n domains belonging to a specified customer and belonging to 
 co.uk tld. You can easy see this use case running by accessing: 
 java -cp rdbms-reduce.jar com.rcosnita.experiments.rdbmsreduce.examples.TopDomainsWithFiltering <account_id> <number_of_domains> <tld_pattern>
+
+For account 100, top 50 domains and '.co.uk' tld it took under < 600ms against 400.000 prov ids and 13333 domains.

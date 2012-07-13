@@ -31,12 +31,15 @@ public class TopDomains {
 	
 	private Reductor reductor;
 	private String sql;
+	private Map<String, Object> sqlArgs;
 	private int topDomains;
 	private List<Integer> provIds;
 	
-	public TopDomains(Reductor reductor, String sql, int topDomains, List<Integer> provIds) {
+	public TopDomains(Reductor reductor, String sql, Map<String, Object> sqlArgs,
+					int topDomains, List<Integer> provIds) {
 		this.reductor = reductor;
 		this.sql = sql;
+		this.sqlArgs = sqlArgs;
 		this.topDomains = topDomains;
 		this.provIds = provIds;
 	}
@@ -60,7 +63,7 @@ public class TopDomains {
 				public void execute(Connection conn) throws SQLException {
 					try {
 						results.addAll(
-								reductor.reduce(conn, sql, provIds, new HashMap<String, Object>(), 
+								reductor.reduce(conn, sql, provIds, sqlArgs, 
 									"name", true, topDomains));
 					}
 					catch(Exception ex) {
@@ -92,9 +95,9 @@ public class TopDomains {
 		
 		String sql = "SELECT * FROM domains WHERE prov_id IN (%(prov_ids)) ORDER BY name ASC";
 		
-		Reductor reductor = new Reductor(1, SupportedEngines.MySQL);
+		Reductor reductor = new Reductor(14, SupportedEngines.MySQL);
 		
-		TopDomains topDomains = new TopDomains(reductor, sql, maxDomains, provIds);
+		TopDomains topDomains = new TopDomains(reductor, sql, new HashMap<String, Object>(), maxDomains, provIds);
 		
 		long startTime2 = Calendar.getInstance().getTimeInMillis(); 
 		List<Map<String, Object>> domains = topDomains.getTopDomains();
