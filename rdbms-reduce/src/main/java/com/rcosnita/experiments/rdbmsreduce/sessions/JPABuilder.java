@@ -1,12 +1,22 @@
 package com.rcosnita.experiments.rdbmsreduce.sessions;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.logging.Logger;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+
+import org.apache.log4j.Logger;
+import org.hibernate.Session;
+import org.hibernate.jdbc.Work;
 
 /**
  * Class used to provide methods for easily accessing defined jpa.
@@ -16,6 +26,8 @@ import javax.persistence.Persistence;
  * @since 10.07.2012
  */
 public class JPABuilder {
+	private final static Logger logger = Logger.getLogger(JPABuilder.class);
+	
 	private static final Map<String, EntityManagerFactory> managers = 
 			new HashMap<String, EntityManagerFactory>();
 	
@@ -41,6 +53,45 @@ public class JPABuilder {
 			
 		return emf.createEntityManager();
 	}
+	
+	/**
+	 * Method used to obtain the provisioning ids for a specified account.
+	 * 
+	 * @param accountId
+	 * @return
+	 */
+	public static List<Integer> getProvisioningIds(final Integer accountId) {
+		logger.info(String.format("Obtaining provisioning ids for account %s", accountId));
+		
+		EntityManager em = JPABuilder.getEntityManager(JPABuilder.PROVISIONING);		
+		
+		long startDate = Calendar.getInstance().getTimeInMillis();
+		
+		final List<Integer> provIds = new ArrayList<Integer>();
+		
+		Session session = em.unwrap(Session.class); 
+		
+		session.doWork(new Work() {			
+			@Override
+			public void execute(Connection conn) throws SQLException {
+				PreparedStatement stmt = conn.prepareStatement("SELECT prov_id FROM items WHERE account_id = ?");
+				stmt.setInt(1, accountId);
+				
+				ResultSet res = stmt.executeQuery();
+				
+				while(res.next()) {
+					provIds.add(res.getInt("prov_id"));
+				}
+			}
+		});
+		
+		long endDate = Calendar.getInstance().getTimeInMillis();
+		
+		logger.info(String.format("Provisioning ids retrieval took %s milliseconds.", (endDate - startDate)));
+		
+		return provIds;
+	}
+	
 	
 	static {
 		/**

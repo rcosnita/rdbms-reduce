@@ -2,7 +2,10 @@ package com.rcosnita.experiments.rdbmsreduce.reductor;
 
 import java.sql.Connection;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -110,25 +113,66 @@ public class Reductor {
 	 * @param sql The current sql statement that we want to use for our problem (it must not include the ids in clause). It 
 	 * 	is mandatory that the last 
 	 * @param sqlValues Map containing all named parameters from sql.
-
+	 * @param orderBy The orderBy column we want to use for sorting the results.
+	 * @param orderAsc The order direction we want to use.
+	 * @param topRecords The number of records we want to retrieve from the reduce set.
+	 * 
 	 * @return A List of rows combined after the reduce occurred. Each entry has a map in which keys are the name of the columns from the sql statement.  
 	 */
-	public List<Map<String, Object>> reduce(Connection conn, String sql, List<Integer> ids, Map<String, Object> sqlValues) throws Exception {
+	public List<Map<String, Object>> reduce(Connection conn, String sql, List<Integer> ids, Map<String, Object> sqlValues,
+			String orderBy, boolean orderAsc, int topRecords) throws Exception {
 		logger.info(String.format("Reducing %s provisioning ids for statement %s.", sql, ids.size()));
 		
 		SupportedEngines.EngineConstraints constraints = this.engine.getEngineConstraints();
 		int requiredReduceOps = (int)Math.ceil((float)ids.size() / constraints.MAX_INCLAUSE_LENGTH);
 				
 		ExecutorService executor = Executors.newFixedThreadPool(maxThreads);
-		
-		List<Future<List<Map<String, Object>>>> queued = new ArrayList<Future<List<Map<String,Object>>>>();
-		List<Map<String, Object>> results = new ArrayList<Map<String,Object>>();
-		
+				
 		long startDate = Calendar.getInstance().getTimeInMillis();
 		
+		List<Future<List<Map<String, Object>>>> queued = 
+				launchReduceThreads(requiredReduceOps, constraints.MAX_INCLAUSE_LENGTH, ids, conn, sql, 
+									sqlValues, executor);
+		List<Map<String, Object>> results = new ArrayList<Map<String,Object>>();		
+		
+		for(Future<List<Map<String, Object>>> task : queued) {
+			List<Map<String, Object>> rows = task.get();
+			sortSet(rows, orderBy, orderAsc);
+			
+			rows = rows.subList(0, topRecords);
+			
+			results.addAll(rows);
+		}
+		
+		long endDate = Calendar.getInstance().getTimeInMillis();
+		
+		logger.info(String.format("Reduce algorithm took %s milliseconds for query %s.", 
+						(endDate - startDate), sql));
+		
+		return results;
+	}
+	
+	/**
+	 * Method used to launch a predefined number of reduce operations on give sql
+	 * statement. 
+	 * 
+	 * @param requiredReduceOps The number of reduce operations required.
+	 * @param inclauseLength The length of inclause we want to use.
+	 * @param ids The provisioning ids we want to use in reduce algorithm. 
+	 * @param conn The current SQL connection.
+	 * @param sql The sql statement used for reduce operation.
+	 * @param sqlValues The sql named parameters we want to use.
+	 * @param executor The current ThreadPool we want to use for the reduce threads.
+	 * @return
+	 */
+	private List<Future<List<Map<String, Object>>>> launchReduceThreads(int requiredReduceOps, int inclauseLength, List<Integer> ids, 
+					Connection conn, String sql, Map<String, Object> sqlValues,
+					ExecutorService executor) {
+		List<Future<List<Map<String, Object>>>> queued = new ArrayList<Future<List<Map<String,Object>>>>();
+		
 		for(int i = 0; i < requiredReduceOps; i++) {
-			int startIndex = i * constraints.MAX_INCLAUSE_LENGTH; 
-			int endIndex = startIndex + constraints.MAX_INCLAUSE_LENGTH;
+			int startIndex = i * inclauseLength; 
+			int endIndex = startIndex + inclauseLength;
 			
 			List<Integer> idsSlice = ids.subList(startIndex, endIndex);
 			String idsStr = joinStrings(idsSlice, ",");
@@ -143,17 +187,29 @@ public class Reductor {
 			queued.add(executor.submit(reduceTask));
 		}
 		
-		for(Future<List<Map<String, Object>>> task : queued) {
-			List<Map<String, Object>> rows = task.get();
-			
-			results.addAll(rows);
-		}
-		
-		long endDate = Calendar.getInstance().getTimeInMillis();
-		
-		logger.info(String.format("Reduce algorithm took %s milliseconds for query %s.", 
-						(endDate - startDate), sql));
-		
-		return results;
-	}	
+		return queued;
+	}
+	
+	/**
+	 * Method used to order a given set.
+	 *  
+	 * @param rows
+	 * @param orderBy
+	 * @param orderAsc
+	 * @return
+	 */
+	private void sortSet(List<Map<String, Object>> rows, final String orderBy, final boolean orderAsc) {
+		Collections.sort(rows, new Comparator<Map<String, Object>>() {
+			@Override
+			public int compare(Map<String, Object> o1, Map<String, Object> o2) {
+				int order = o1.get(orderBy).toString().compareTo(o2.get(orderBy).toString()); 
+				
+				if(orderAsc) {
+					return order;
+				}
+				
+				return order * -1;
+			}			
+		});
+	}
 }
