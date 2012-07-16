@@ -54,7 +54,6 @@ public class LargeVolumeDataCreator {
 				maxItems, accountIds.size()));
 		
 		EntityManager em = null;
-		EntityTransaction tran = null;
 		
 		try {
 			em = JPABuilder.getEntityManager(pu);
@@ -99,6 +98,13 @@ public class LargeVolumeDataCreator {
 		tran.begin();
 		
 		for(Integer accountId : accountIds) {
+			System.gc(); // give a change to garbage collector to clean resources.
+			
+			try {
+				Thread.sleep(50);
+			}
+			catch(InterruptedException iex) {}
+			
 			for(int i = 0; i < idsPerAccount; i++) {
 				ProvisioningItem item = new ProvisioningItem();
 				
@@ -127,7 +133,7 @@ public class LargeVolumeDataCreator {
 						}
 					}
 					finally {
-						inserted = 0;						
+						inserted = 0;
 					}
 				}
 			}
@@ -184,6 +190,13 @@ public class LargeVolumeDataCreator {
 		int inserted = 0;
 		
 		for(Integer accountId : accountIds) {
+			System.gc(); // give a change to garbage collector to clean resources.
+			
+			try {
+				Thread.sleep(50);
+			}
+			catch(InterruptedException iex) {}			
+			
 			for(int i = 0; i < idsPerAccount; i++) {
 				int provId = Integer.valueOf("" + i + accountId);
 				
