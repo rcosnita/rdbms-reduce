@@ -121,12 +121,13 @@ public class LargeVolumeDataCreator {
 						tran = em.getTransaction();
 						tran.begin();
 					}
-					finally {
-						inserted = 0;
-						
+					catch(Exception ex) {
 						if(tran != null && tran.isActive()) {
 							tran.rollback();
 						}
+					}
+					finally {
+						inserted = 0;						
 					}
 				}
 			}
@@ -204,11 +205,13 @@ public class LargeVolumeDataCreator {
 						tran = em.getTransaction();
 						tran.begin();
 					}
-					finally {
-						inserted = 0;
+					catch(Exception ex) {
 						if(tran != null && tran.isActive()) {
 							tran.rollback();
-						}
+						}						
+					}
+					finally {
+						inserted = 0;
 					}
 				}
 			}
