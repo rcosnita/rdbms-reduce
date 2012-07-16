@@ -93,11 +93,14 @@ public class TopDomains {
 		
 		List<Integer> provIds = JPABuilder.getProvisioningIds(accountId);
 		
-		String sql = "SELECT * FROM domains WHERE prov_id IN (%(prov_ids)) ORDER BY name ASC";
+		String sql = "SELECT * FROM domains WHERE prov_id IN (%(prov_ids)) ORDER BY name ASC LIMIT 0,%(max_domains)";
 		
 		Reductor reductor = new Reductor(14, SupportedEngines.MySQL);
 		
-		TopDomains topDomains = new TopDomains(reductor, sql, new HashMap<String, Object>(), maxDomains, provIds);
+		Map<String, Object> sqlArgs = new HashMap<String, Object>();
+		sqlArgs.put("max_domains", maxDomains);
+		
+		TopDomains topDomains = new TopDomains(reductor, sql, sqlArgs, maxDomains, provIds);
 		
 		long startTime2 = Calendar.getInstance().getTimeInMillis(); 
 		List<Map<String, Object>> domains = topDomains.getTopDomains();

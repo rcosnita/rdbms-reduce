@@ -34,12 +34,13 @@ public class TopDomainsTld {
 		
 		List<Integer> provIds = JPABuilder.getProvisioningIds(accountId);
 		
-		String sql = "SELECT * FROM domains WHERE name LIKE '%%(tld)%' AND prov_id IN (%(prov_ids)) ORDER BY name ASC";
+		String sql = "SELECT * FROM domains WHERE name LIKE '%%(tld)%' AND prov_id IN (%(prov_ids)) ORDER BY name ASC LIMIT 0,%(max_domains)";
 		
 		Reductor reductor = new Reductor(14, SupportedEngines.MySQL);
 		
 		Map<String, Object> sqlValues = new HashMap<String, Object>();
 		sqlValues.put("tld", ".co.uk");
+		sqlValues.put("max_domains", maxDomains);		
 		TopDomains topDomains = new TopDomains(reductor, sql, sqlValues, maxDomains, provIds);
 		
 		long startTime2 = Calendar.getInstance().getTimeInMillis(); 
