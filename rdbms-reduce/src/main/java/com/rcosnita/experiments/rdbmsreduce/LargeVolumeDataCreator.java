@@ -23,6 +23,8 @@ import com.rcosnita.experiments.rdbmsreduce.sessions.JPABuilder;
 public class LargeVolumeDataCreator {
 	private final static Logger logger = Logger.getLogger(LargeVolumeDataCreator.class);
 	
+	private final int MAX_TRANSACTION_ITEMS = 5000;
+	
 	/**
 	 * Interface used to provide the items generator interface api. This is useful
 	 * to reduce the boiler plate code of JPA transactions.
@@ -57,21 +59,12 @@ public class LargeVolumeDataCreator {
 		try {
 			em = JPABuilder.getEntityManager(pu);
 			
-			tran = em.getTransaction();
-			tran.begin();
-			
 			generator.insertItems(maxItems, accountIds, em);
-			
-			tran.commit();	
 		}
 		finally {
 			if(em != null) {
 				em.close();
-			}
-			
-			if(tran != null && tran.isActive()) {
-				tran.rollback();
-			}
+			}			
 		}		
 	}
 	
@@ -82,7 +75,7 @@ public class LargeVolumeDataCreator {
 		generateItems(maxProvIds, accountIds, JPABuilder.PROVISIONING, 
 				new ItemsGenerator() {
 			@Override
-			public void insertItems(int maxItems, List<Integer> accountIds, EntityManager em) {
+			public void insertItems(int maxItems, List<Integer> accountIds, EntityManager em) {				
 				insertProvisioningItems(maxItems, accountIds, em);
 			}
 		});
@@ -100,6 +93,11 @@ public class LargeVolumeDataCreator {
 		
 		logger.info(String.format("Inserting %s provisioning ids per account.", idsPerAccount));		
 		
+		int inserted = 0;
+
+		EntityTransaction tran = em.getTransaction();
+		tran.begin();
+		
 		for(Integer accountId : accountIds) {
 			for(int i = 0; i < idsPerAccount; i++) {
 				ProvisioningItem item = new ProvisioningItem();
@@ -111,7 +109,38 @@ public class LargeVolumeDataCreator {
 				item.setProvId(provId);
 				
 				em.persist(item);
+				
+				inserted++;
+				
+				if(inserted == MAX_TRANSACTION_ITEMS) {
+					try {
+						logger.info("Commiting chunk of prov items");
+						
+						tran.commit();
+	
+						tran = em.getTransaction();
+						tran.begin();
+					}
+					finally {
+						inserted = 0;
+						
+						if(tran != null && tran.isActive()) {
+							tran.rollback();
+						}
+					}
+				}
 			}
+		}
+		
+		if(inserted > 0) {
+			try {
+				tran.commit();
+			}
+			finally {
+				if(tran != null && tran.isActive()) {
+					tran.rollback();
+				}
+			}			
 		}
 	}
 
@@ -148,6 +177,11 @@ public class LargeVolumeDataCreator {
 		
 		logger.info(String.format("Inserting %s domains per account.", (idsPerAccount * accountIds.size())));
 		
+		EntityTransaction tran = em.getTransaction();
+		tran.begin();
+		
+		int inserted = 0;
+		
 		for(Integer accountId : accountIds) {
 			for(int i = 0; i < idsPerAccount; i++) {
 				int provId = Integer.valueOf("" + i + accountId);
@@ -159,7 +193,36 @@ public class LargeVolumeDataCreator {
 				dom.setName(String.format(domName, provId));
 				
 				em.persist(dom);
+				
+				inserted ++;
+				
+				if(inserted == MAX_TRANSACTION_ITEMS) {
+					try {
+						logger.info("Commiting chunk of domains.");
+						tran.commit();
+						
+						tran = em.getTransaction();
+						tran.begin();
+					}
+					finally {
+						inserted = 0;
+						if(tran != null && tran.isActive()) {
+							tran.rollback();
+						}
+					}
+				}
 			}
+		}
+		
+		if(inserted > 0) {
+			try {
+				tran.commit();
+			}
+			finally {
+				if(tran != null && tran.isActive()) {
+					tran.rollback();
+				}
+			}			
 		}
 	}
 	
