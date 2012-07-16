@@ -32,7 +32,7 @@ public enum SupportedEngines {
 	SupportedEngines(int engineId) {
 		this.engineId = engineId;
 		
-		engineConstraints.put(1, new EngineConstraints(1000));
+		engineConstraints.put(1, new EngineConstraints(10000));
 	}
 	
 	/**
