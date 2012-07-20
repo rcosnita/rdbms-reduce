@@ -93,7 +93,7 @@ public class TopDomains {
 		
 		List<Integer> provIds = JPABuilder.getProvisioningIds(accountId);
 		
-		String sql = "SELECT * FROM domains WHERE prov_id IN (%(prov_ids)) ORDER BY name ASC LIMIT 0,%(max_domains)";
+		String sql = "SELECT * FROM domains WHERE prov_id IN (%(prov_ids)) ORDER BY name ASC LIMIT 100,%(max_domains)";
 		
 		Reductor reductor = new Reductor(14, SupportedEngines.MySQL);
 		
