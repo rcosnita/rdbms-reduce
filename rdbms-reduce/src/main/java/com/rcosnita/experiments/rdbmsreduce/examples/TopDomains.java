@@ -82,18 +82,20 @@ public class TopDomains {
 	}
 	
 	public static void main(String[] args) {
-		if(args.length != 2) {
-			throw new RuntimeException("Invalid usage... Ex: java com.rcosnita.experiments.rdbmsreduce.examples.TopDomains <account_id> <number_of_domains>");
+		if(args.length < 2) {
+			throw new RuntimeException("Invalid usage... Ex: java com.rcosnita.experiments.rdbmsreduce.examples.TopDomains <account_id> <number_of_domains> <first_page>");
 		}
 		
 		int accountId = Integer.parseInt(args[0]);
 		int maxDomains = Integer.parseInt(args[1]);
 		
+		int firstPage  = Integer.parseInt(args.length == 3 ? args[2] : "0") * maxDomains;
+		
 		long startTime = Calendar.getInstance().getTimeInMillis();
 		
 		List<Integer> provIds = JPABuilder.getProvisioningIds(accountId);
 		
-		String sql = "SELECT * FROM domains WHERE prov_id IN (%(prov_ids)) ORDER BY name ASC LIMIT 100,%(max_domains)";
+		String sql = "SELECT * FROM domains WHERE prov_id IN (%(prov_ids)) ORDER BY name ASC LIMIT " + firstPage + ",%(max_domains)";
 		
 		Reductor reductor = new Reductor(14, SupportedEngines.MySQL);
 		
