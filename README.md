@@ -32,3 +32,22 @@ co.uk tld. You can easy see this use case running by accessing:
 java -cp rdbms-reduce.jar com.rcosnita.experiments.rdbmsreduce.examples.TopDomainsWithFiltering <account_id> <number_of_domains> <tld_pattern> <first_page - 0 based>
 
 For account 100, top 50 domains and '.co.uk' tld it took under < 600ms against 400.000 prov ids and 13333 domains.
+
+# Database optimization
+
+Both use cases forementioned are working relatively well for tables which are not partitioned. In some cases you will have a large number
+of records and then the use cases will degrade in performance. For these scenarios you have a fairly easy solution at your disposal: partitioning.
+
+1. For provisioning ids the table can be easily partitioned by account_id. Almost all use cases for the distributed configuration will
+start from an account id.
+2. For store1_products.domains table the partioning will be done by prov_ids. This will facilitate multithreaded retrieval of looked up provisioning
+identifiers.
+
+You can easily test this but dropping provisioning and store1_products schemas and recreating them by using sql/distributed_dbs_partitioned.sql.
+When the scripts finish the execution you will have 2.000.000 provisioning items and 2.000.000 domains in place. Rerun the use cases and
+you will be able to see great improvements. 
+
+On my machine, for the top 50 domains ordered alphabetically I obtained a total time of ~670 ms. For the top 50 domains ordered alphabetically
+and having tld = '.co.uk' I obtained ~575ms.
+
+
